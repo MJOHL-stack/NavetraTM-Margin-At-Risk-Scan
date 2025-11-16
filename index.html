@@ -5,26 +5,28 @@
   <title>Navetra™ Margin-at-Risk Scan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#050815" />
+  <meta name="theme-color" content="#f3f4f6" />
 
-  <!-- App / iOS icons -->
+  <!-- iOS home-screen icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
 
   <style>
     :root {
       --pw-primary: #8c1d8c;
-      --pw-primary-bright: #bf29ec;
-      --pw-secondary: #e3655b;
-      --pw-tertiary: #ffbf46;
-      --pw-highlight: #48a9a6;
-      --pw-bg: #050815;
-      --pw-surface: #0b1020;
-      --pw-surface-soft: #111827;
-      --pw-border: #262b3f;
-      --pw-text-main: #f9fafb;
-      --pw-text-soft: #a1a5bb;
+      --pw-primary-soft: #b567c2;
+      --pw-accent: #48a9a6;
+      --pw-danger: #e3655b;
+      --pw-warning: #f59e0b;
+      --pw-severe: #111827;
+      --pw-bg: #f3f4f6;
+      --pw-surface: #ffffff;
+      --pw-surface-soft: #f9fafb;
+      --pw-border: #d1d5db;
+      --pw-text-main: #111827;
+      --pw-text-soft: #6b7280;
     }
 
     * {
@@ -35,39 +37,54 @@
     body {
       margin: 0;
       padding: 0;
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      background: var(--pw-bg);
       color: var(--pw-text-main);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: stretch;
+      min-height: 100vh;
     }
 
     .app {
       width: 100%;
       max-width: 520px;
       margin: 12px;
-      border-radius: 24px;
-      padding: 18px 16px 20px;
-      background: linear-gradient(145deg, #020617, #050816);
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      box-shadow:
-        0 18px 40px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(15, 23, 42, 0.7);
+      border-radius: 18px;
+      background: var(--pw-surface);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      border: 1px solid var(--pw-border);
+      display: flex;
+      flex-direction: column;
     }
 
     @media (min-width: 640px) {
       .app {
-        padding: 22px 22px 24px;
-        margin: 22px;
+        margin: 24px;
+        border-radius: 20px;
       }
     }
+
+    .app-inner {
+      padding: 16px 16px 18px;
+    }
+
+    @media (min-width: 640px) {
+      .app-inner {
+        padding: 20px 22px 22px;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Header */
 
     .app-header {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .brand-row {
@@ -76,17 +93,17 @@
       gap: 8px;
       font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #f4f4ff;
+      color: var(--pw-primary);
     }
 
     .brand-dot {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, var(--pw-primary-bright), var(--pw-primary));
-      box-shadow: 0 0 12px rgba(191, 41, 236, 0.55);
+      background: radial-gradient(circle at 30% 20%, #f97316, var(--pw-primary));
+      box-shadow: 0 0 10px rgba(140, 29, 140, 0.6);
     }
 
     .app-subtitle {
@@ -100,31 +117,58 @@
       margin-top: 6px;
     }
 
-    .section {
-      margin-top: 10px;
-    }
-
     .step-label {
       text-transform: uppercase;
-      font-size: 0.68rem;
-      letter-spacing: 0.16em;
-      color: #6b7280;
-      margin-bottom: 4px;
-    }
-
-    .helper-text {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
       color: var(--pw-text-soft);
       margin-bottom: 6px;
     }
 
-    /* Domain “page” */
+    .helper-text {
+      font-size: 0.8rem;
+      color: var(--pw-text-soft);
+      margin-bottom: 10px;
+    }
 
-    .domain-shell {
-      border-radius: 20px;
+    /* Wizard view */
+
+    #wizardView {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      color: var(--pw-text-soft);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      margin-left: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--pw-primary-soft), var(--pw-accent));
+      transition: width 0.2s ease-out;
+    }
+
+    .domain-card {
+      border-radius: 14px;
       border: 1px solid var(--pw-border);
-      background: radial-gradient(circle at top left, rgba(140, 29, 140, 0.25), var(--pw-surface));
-      padding: 12px 12px 10px;
+      background: var(--pw-surface-soft);
+      padding: 12px 10px 10px;
     }
 
     .domain-tag {
@@ -132,39 +176,34 @@
       align-items: center;
       padding: 2px 8px;
       border-radius: 999px;
-      font-size: 0.65rem;
-      background: rgba(72, 169, 166, 0.18);
-      color: #b7f3ee;
+      font-size: 0.68rem;
+      background: rgba(140, 29, 140, 0.06);
+      color: var(--pw-primary);
       margin-bottom: 4px;
     }
 
     .domain-title {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      margin-bottom: 2px;
     }
 
     .domain-desc {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--pw-text-soft);
-      margin-bottom: 8px;
+      margin-top: 2px;
     }
 
-    .domain-progress {
-      font-size: 0.72rem;
-      color: var(--pw-text-soft);
-      margin-bottom: 6px;
-    }
-
-    .domain-questions {
+    .questions-block {
+      margin-top: 8px;
       border-radius: 12px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 8px 9px 6px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      padding: 8px 9px;
     }
 
     .question {
-      margin-bottom: 6px;
-      font-size: 0.76rem;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
     }
 
     .question:last-child {
@@ -175,273 +214,324 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-top: 3px;
+      margin-top: 4px;
     }
 
     .options label {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      padding: 3px 8px;
-      font-size: 0.7rem;
+      gap: 4px;
+      padding: 4px 9px;
+      font-size: 0.78rem;
       border-radius: 999px;
-      border: 1px solid #374151;
-      background: #020617;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
       cursor: pointer;
-      color: #e5e7eb;
+      color: var(--pw-text-main);
     }
 
     .options input {
-      accent-color: var(--pw-primary-bright);
+      accent-color: var(--pw-primary);
       cursor: pointer;
     }
 
     .nav-row {
       display: flex;
-      justify-content: space-between;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
-    button.primary {
+    button {
+      font-family: inherit;
+    }
+
+    .btn-primary {
       flex: 1;
       border-radius: 999px;
       border: none;
       padding: 9px 12px;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--pw-primary-bright), var(--pw-highlight));
-      color: #020617;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+      background: linear-gradient(135deg, var(--pw-primary), var(--pw-accent));
+      color: #ffffff;
+      box-shadow: 0 10px 20px rgba(140, 29, 140, 0.18);
       transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
     }
 
-    button.primary:hover {
+    .btn-primary:hover {
       transform: translateY(-1px);
-      filter: brightness(1.04);
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75);
+      filter: brightness(1.03);
+      box-shadow: 0 12px 24px rgba(140, 29, 140, 0.25);
     }
 
-    button.secondary {
-      min-width: 82px;
+    .btn-secondary {
       border-radius: 999px;
       padding: 8px 12px;
-      font-size: 0.78rem;
-      border: 1px solid var(--pw-border);
-      background: transparent;
+      font-size: 0.8rem;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
       color: var(--pw-text-soft);
       cursor: pointer;
+      min-width: 80px;
     }
 
-    button.secondary:disabled {
+    .btn-secondary:disabled {
       opacity: 0.4;
       cursor: default;
     }
 
-    /* Result */
+    /* Result view */
 
-    .result {
+    #resultView {
       display: none;
-      margin-top: 14px;
-      border-radius: 18px;
-      padding: 9px 10px 10px;
-      background: radial-gradient(circle at top right, rgba(72, 169, 166, 0.24), var(--pw-surface-soft));
-      font-size: 0.8rem;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-card {
+      border-radius: 16px;
+      border: 1px solid var(--pw-border);
+      background: #ffffff;
+      padding: 14px 12px 12px;
     }
 
     .result-title {
-      font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 1rem;
+      font-weight: 650;
+      margin-bottom: 6px;
     }
 
-    .badge {
+    .band-label {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-      padding: 3px 8px;
+      gap: 8px;
+      padding: 5px 10px;
       border-radius: 999px;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       border: 1px solid transparent;
+      margin-top: 4px;
     }
 
-    .dot {
-      width: 9px;
-      height: 9px;
+    .band-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 999px;
     }
 
-    .risk-green { background: rgba(72, 169, 166, 0.18); border-color: #48a9a6; }
-    .risk-green .dot { background: #48a9a6; }
+    .band-green {
+      background: #ecfdf5;
+      border-color: #22c55e;
+      color: #166534;
+    }
 
-    .risk-yellow { background: rgba(255, 191, 70, 0.2); border-color: #ffbf46; }
-    .risk-yellow .dot { background: #ffbf46; }
+    .band-green .band-dot {
+      background: #22c55e;
+    }
 
-    .risk-red { background: rgba(227, 101, 91, 0.22); border-color: #e3655b; }
-    .risk-red .dot { background: #e3655b; }
+    .band-yellow {
+      background: #fffbeb;
+      border-color: #fbbf24;
+      color: #92400e;
+    }
 
-    .risk-black { background: rgba(15, 23, 42, 0.98); border-color: #000; }
-    .risk-black .dot { background: #000; }
+    .band-yellow .band-dot {
+      background: #fbbf24;
+    }
+
+    .band-red {
+      background: #fef2f2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+
+    .band-red .band-dot {
+      background: #ef4444;
+    }
+
+    .band-black {
+      background: #111827;
+      border-color: #000000;
+      color: #f9fafb;
+    }
+
+    .band-black .band-dot {
+      background: #000000;
+    }
 
     .result-text {
-      margin-top: 6px;
+      margin-top: 8px;
+      font-size: 0.85rem;
       color: var(--pw-text-main);
     }
 
     .result-note {
       margin-top: 6px;
-      font-size: 0.72rem;
+      font-size: 0.78rem;
       color: var(--pw-text-soft);
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     /* Lead form */
 
     .lead-form {
-      display: none;
-      margin-top: 12px;
-      padding: 10px 10px 9px;
       border-radius: 16px;
       border: 1px solid var(--pw-border);
-      background: rgba(10, 15, 30, 0.96);
-      font-size: 0.78rem;
+      background: var(--pw-surface-soft);
+      padding: 12px;
+      font-size: 0.8rem;
     }
 
     .lead-title {
-      font-size: 0.78rem;
       font-weight: 600;
       margin-bottom: 4px;
     }
 
     .field-label {
-      font-size: 0.72rem;
-      color: var(--pw-text-soft);
       margin-top: 6px;
       margin-bottom: 2px;
+      font-size: 0.78rem;
+      color: var(--pw-text-soft);
     }
 
     .lead-form input {
       width: 100%;
       border-radius: 10px;
-      border: 1px solid #374151;
-      background: #020617;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
       color: var(--pw-text-main);
-      padding: 6px 8px;
-      font-size: 0.78rem;
+      padding: 7px 9px;
+      font-size: 0.8rem;
     }
 
     .lead-form input::placeholder {
-      color: #6b7280;
+      color: #9ca3af;
     }
 
     .lead-submit {
       width: 100%;
-      margin-top: 8px;
-      padding: 7px 10px;
+      margin-top: 10px;
+      padding: 8px 10px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      background: var(--pw-secondary);
-      color: #020617;
+      background: var(--pw-accent);
+      color: #ffffff;
       font-weight: 600;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
     }
 
     .lead-note {
       margin-top: 6px;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: var(--pw-text-soft);
     }
 
     .lead-thankyou {
       margin-top: 6px;
-      font-size: 0.72rem;
-      color: #bbf7d0;
+      font-size: 0.76rem;
+      color: #15803d;
       display: none;
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="app-header">
-      <div class="brand-row">
-        <div class="brand-dot"></div>
-        <span>PURPLE WINS · NAVETRA™</span>
-      </div>
-      <div class="app-subtitle">
-        Executive scan for people-side margin risk. ~2–3 minutes across all domains.
-      </div>
-      <h1 class="app-title">How much margin are you leaking?</h1>
-    </header>
-
-    <!-- DOMAIN “PAGE” -->
-    <section class="section" id="domainSection">
-      <div class="step-label" id="stepLabel">Step 1 · Domain 1 of 5</div>
-      <p class="helper-text" id="helperText">
-        Answer all 3 questions for this domain. You’ll move through each domain in sequence and see your overall risk band at the end.
-      </p>
-
-      <div class="domain-shell">
-        <div class="domain-tag" id="domainTag"></div>
-        <div class="domain-title" id="domainTitle"></div>
-        <div class="domain-desc" id="domainDesc"></div>
-        <div class="domain-progress" id="domainProgress"></div>
-
-        <div class="domain-questions" id="questionsContainer"></div>
-      </div>
-
-      <div class="nav-row">
-        <button id="backBtn" class="secondary">Back</button>
-        <button id="nextBtn" class="primary">Next domain</button>
-      </div>
-    </section>
-
-    <!-- RESULT -->
-    <section class="section">
-      <div id="result" class="result">
-        <div class="result-title">Overall Margin-at-Risk Snapshot</div>
-        <div id="riskBadge" class="badge">
-          <div class="dot"></div>
-          <span id="riskLabel"></span>
+    <div class="app-inner">
+      <header class="app-header">
+        <div class="brand-row">
+          <div class="brand-dot"></div>
+          <span>PURPLE WINS · NAVETRA™</span>
         </div>
-        <div id="resultText" class="result-text"></div>
-        <div class="result-note">
-          This view combines all domains to show your people-side margin exposure on a Green · Yellow · Red · Black (severe) scale.
+        <div class="app-subtitle">
+          Executive scan for people-side margin risk. ~2–3 minutes across all domains.
         </div>
-      </div>
-    </section>
+        <h1 class="app-title">How much margin are you leaking?</h1>
+      </header>
 
-    <!-- LEAD FORM -->
-    <section class="section">
-      <div id="leadForm" class="lead-form">
-        <div class="lead-title">Step 3 · Request a Navetra™ deepdive into how much margins might be trapped in this risk</div>
+      <!-- Wizard (one domain per "page") -->
+      <main id="wizardView">
+        <div class="step-label">Step 1 · Scan each risk domain</div>
+        <p class="helper-text">
+          You’ll see one domain at a time. Please answer all 3 questions in each domain. At the end, we’ll show your overall Green · Yellow · Red · Black risk band.
+        </p>
 
-        <div class="field-label">Organization (optional)</div>
-        <input id="orgInput" type="text" placeholder="e.g., plant / business unit name" />
-
-        <div class="field-label">Association (optional)</div>
-        <input id="associationInput" type="text" placeholder="e.g., NIA, EFC, Markham BoT" />
-
-        <div class="field-label">Email address</div>
-        <input id="emailInput" type="email" placeholder="you@company.com" autocomplete="email" />
-
-        <button id="submitLeadBtn" type="button" class="lead-submit">
-          Send summary to Navetra™ team
-        </button>
-
-        <div class="lead-note">
-          This snapshot is complimentary. A summary of this mini diagnostic can be sent onward to our secure mailbox if you would like to quantify this risk for your organization and create a practical list of implementation actions to fix the problems.
-          Ongoing analysis, deeper diagnostics, and Navetra™ platform access are available as paid services, should you choose to continue.
+        <div class="progress-row">
+          <span id="progressText">Domain 1 of 5</span>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
         </div>
-        <div id="leadThankyou" class="lead-thankyou">
-          Thank you — your details are noted. A Navetra™ summary will be reviewed and queued for follow-up.
+
+        <div id="domainContainer"></div>
+
+        <div class="nav-row">
+          <button id="backBtn" class="btn-secondary" type="button">Back</button>
+          <button id="nextBtn" class="btn-primary" type="button">Next domain</button>
         </div>
-      </div>
-    </section>
+      </main>
+
+      <!-- Result view (full-focus screen) -->
+      <main id="resultView" class="hidden">
+        <div class="step-label">Step 2 · Overall risk band</div>
+
+        <section class="result-card">
+          <div class="result-title">Overall Margin-at-Risk Snapshot</div>
+          <div id="bandLabel" class="band-label">
+            <div class="band-dot"></div>
+            <span id="bandText"></span>
+          </div>
+          <div id="resultText" class="result-text"></div>
+          <div class="result-note">
+            This combines all five domains to show your people-side margin exposure on a Green · Yellow · Red · Black (severe) scale.
+          </div>
+
+          <div class="result-actions">
+            <button id="reviewBtn" class="btn-secondary" type="button">
+              Review answers
+            </button>
+            <button id="restartBtn" class="btn-secondary" type="button">
+              Start new scan
+            </button>
+          </div>
+        </section>
+
+        <section class="lead-form" style="margin-top: 10px;">
+          <div class="lead-title">Step 3 · Optional — request a Navetra™ snapshot</div>
+
+          <div class="field-label">Organization (optional)</div>
+          <input id="orgInput" type="text" placeholder="e.g., Plant / business unit name" />
+
+          <div class="field-label">Association (optional)</div>
+          <input id="associationInput" type="text" placeholder="e.g., NIA, EFC, Markham BoT" />
+
+          <div class="field-label">Email address</div>
+          <input id="emailInput" type="email" placeholder="you@company.com" autocomplete="email" />
+
+          <button id="submitLeadBtn" type="button" class="lead-submit">
+            Send summary to Navetra™ team
+          </button>
+
+          <div class="lead-note">
+            This snapshot is complimentary. A summary of this mini diagnostic can be sent onward to our secure mailbox if you would like to quantify this risk for your organization and create a practical list of implementation actions to fix the problems.
+            Ongoing analysis, deeper diagnostics, and Navetra™ platform access are available as paid services, should you choose to continue.
+          </div>
+
+          <div id="leadThankyou" class="lead-thankyou">
+            Thank you — your details are noted. A Navetra™ summary will be reviewed and queued for follow-up.
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 
   <script>
-    // --- Domain definitions (5 domains, 3 questions each) ---
+    // --- Domains & questions (unchanged scoring logic) ---
     const domains = [
       {
         id: "hiring",
@@ -502,165 +592,191 @@
 
     // --- State ---
     let currentDomainIndex = 0;
-    const answers = domains.map(d => Array(d.questions.length).fill(null)); // store yes/sometimes/no
+    const answers = domains.map(() => [null, null, null]); // [domain][question] = 'yes'|'sometimes'|'no'
 
-    // --- DOM refs ---
-    const stepLabel = document.getElementById("stepLabel");
-    const helperText = document.getElementById("helperText");
-    const domainTag = document.getElementById("domainTag");
-    const domainTitle = document.getElementById("domainTitle");
-    const domainDesc = document.getElementById("domainDesc");
-    const domainProgress = document.getElementById("domainProgress");
-    const questionsContainer = document.getElementById("questionsContainer");
+    // --- DOM references ---
+    const wizardView = document.getElementById("wizardView");
+    const resultView = document.getElementById("resultView");
+    const domainContainer = document.getElementById("domainContainer");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
     const backBtn = document.getElementById("backBtn");
     const nextBtn = document.getElementById("nextBtn");
 
-    const resultEl = document.getElementById("result");
-    const riskBadge = document.getElementById("riskBadge");
-    const riskLabel = document.getElementById("riskLabel");
-    const resultText = document.getElementById("resultText");
+    const bandLabel = document.getElementById("bandLabel");
+    const bandText = document.getElementById("bandText");
+    const resultTextEl = document.getElementById("resultText");
+    const reviewBtn = document.getElementById("reviewBtn");
+    const restartBtn = document.getElementById("restartBtn");
 
-    const leadForm = document.getElementById("leadForm");
     const orgInput = document.getElementById("orgInput");
     const associationInput = document.getElementById("associationInput");
     const emailInput = document.getElementById("emailInput");
     const submitLeadBtn = document.getElementById("submitLeadBtn");
     const leadThankyou = document.getElementById("leadThankyou");
 
-    // --- Render the current domain "page" ---
-    function renderDomain() {
-      const d = domains[currentDomainIndex];
+    // --- Render current domain page ---
+    function renderDomainPage() {
       const total = domains.length;
-      const domainNumber = currentDomainIndex + 1;
+      const d = domains[currentDomainIndex];
 
-      stepLabel.textContent = `Step 1 · Domain ${domainNumber} of ${total}`;
-      domainTag.textContent = d.tag;
-      domainTitle.textContent = d.title;
-      domainDesc.textContent = d.desc;
-      domainProgress.textContent = `Answer all 3 questions for this domain (${domainNumber}/${total}).`;
+      progressText.textContent = `Domain ${currentDomainIndex + 1} of ${total}`;
+      progressFill.style.width = `${((currentDomainIndex + 1) / total) * 100}%`;
 
-      // questions
-      questionsContainer.innerHTML = d.questions
-        .map((q, i) => `
-          <div class="question">
-            Q${i + 1}. ${q}
-            <div class="options">
-              <label><input type="radio" name="q${i}" value="yes" /> Yes</label>
-              <label><input type="radio" name="q${i}" value="sometimes" /> Sometimes</label>
-              <label><input type="radio" name="q${i}" value="no" /> No</label>
+      backBtn.disabled = currentDomainIndex === 0;
+      nextBtn.textContent = currentDomainIndex === total - 1 ? "View overall risk band" : "Next domain";
+
+      const domainAnswers = answers[currentDomainIndex];
+
+      const questionsHTML = d.questions
+        .map((q, i) => {
+          const val = domainAnswers[i];
+          return `
+            <div class="question">
+              Q${i + 1}. ${q}
+              <div class="options">
+                <label>
+                  <input type="radio" name="q${i}" value="yes" ${val === "yes" ? "checked" : ""} />
+                  Yes
+                </label>
+                <label>
+                  <input type="radio" name="q${i}" value="sometimes" ${val === "sometimes" ? "checked" : ""} />
+                  Sometimes
+                </label>
+                <label>
+                  <input type="radio" name="q${i}" value="no" ${val === "no" ? "checked" : ""} />
+                  No
+                </label>
+              </div>
             </div>
-          </div>
-        `)
+          `;
+        })
         .join("");
 
-      // restore any previously saved answers
-      answers[currentDomainIndex].forEach((val, i) => {
-        if (!val) return;
-        const input = document.querySelector(`input[name="q${i}"][value="${val}"]`);
-        if (input) input.checked = true;
-      });
+      domainContainer.innerHTML = `
+        <article class="domain-card">
+          <div class="domain-tag">${d.tag}</div>
+          <div class="domain-title">${d.title}</div>
+          <div class="domain-desc">${d.desc}</div>
+          <div class="questions-block">
+            ${questionsHTML}
+          </div>
+        </article>
+      `;
 
-      // nav button states
-      backBtn.disabled = currentDomainIndex === 0;
-      if (currentDomainIndex === total - 1) {
-        nextBtn.textContent = "View overall risk band";
-      } else {
-        nextBtn.textContent = "Next domain";
-      }
-    }
-
-    // --- Save answers for current domain; return false if incomplete ---
-    function captureCurrentAnswers() {
-      const qCount = domains[currentDomainIndex].questions.length;
-      for (let i = 0; i < qCount; i++) {
-        const selected = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!selected) {
-          alert("Please answer all questions for this domain before continuing.");
-          return false;
-        }
-        answers[currentDomainIndex][i] = selected.value;
-      }
-      return true;
-    }
-
-    // --- Compute cumulative risk across all domains ---
-    function computeOverallRisk() {
-      let totalScore = 0;
-      let answeredAll = true;
-
-      answers.forEach(domainAnswers => {
-        domainAnswers.forEach(val => {
-          if (!val) answeredAll = false;
-          if (val === "yes") totalScore += 2;
-          else if (val === "sometimes") totalScore += 1;
+      // Attach listeners to update state on change
+      d.questions.forEach((_, i) => {
+        document.querySelectorAll(`input[name="q${i}"]`).forEach((inputEl) => {
+          inputEl.addEventListener("change", (e) => {
+            answers[currentDomainIndex][i] = e.target.value;
+          });
         });
       });
+    }
 
-      if (!answeredAll) {
-        alert("Please complete all domains before viewing your overall risk band.");
+    // --- Navigation helpers ---
+    function canAdvanceCurrentDomain() {
+      return answers[currentDomainIndex].every((val) => val === "yes" || val === "sometimes" || val === "no");
+    }
+
+    function handleNext() {
+      if (!canAdvanceCurrentDomain()) {
+        alert("Please answer all 3 questions in this domain before continuing.");
         return;
       }
+      if (currentDomainIndex < domains.length - 1) {
+        currentDomainIndex++;
+        renderDomainPage();
+      } else {
+        computeOverallRisk();
+      }
+    }
 
-      const maxScore = domains.length * 3 * 2; // 5 domains × 3 questions × 2 pts
+    function handleBack() {
+      if (currentDomainIndex === 0) return;
+      currentDomainIndex--;
+      renderDomainPage();
+    }
+
+    // --- Risk computation (cumulative across all domains) ---
+    function computeOverallRisk() {
+      const numDomains = domains.length;
+      const questionsPerDomain = 3;
+      let totalScore = 0;
+
+      for (let d = 0; d < numDomains; d++) {
+        for (let q = 0; q < questionsPerDomain; q++) {
+          const val = answers[d][q];
+          if (!val) {
+            alert("Please complete all domains before viewing your overall risk band.");
+            currentDomainIndex = d;
+            renderDomainPage();
+            return;
+          }
+          if (val === "yes") totalScore += 2;
+          else if (val === "sometimes") totalScore += 1;
+        }
+      }
+
+      const maxScore = numDomains * questionsPerDomain * 2;
       const ratio = totalScore / maxScore;
 
-      let bandLabel, cssClass, explanation;
+      let label, cssClass, explanation;
 
       if (ratio <= 0.25) {
-        bandLabel = "Green — Low margin-at-risk";
-        cssClass = "risk-green";
+        label = "Green — Low margin-at-risk";
+        cssClass = "band-green";
         explanation =
-          "Based on your responses, people-side margin risk appears contained. You may still have targeted pockets of leakage, but large-scale exposure is unlikely.";
+          "Based on your responses, people-side margin risk appears contained. There may still be targeted pockets of leakage, but large-scale exposure is unlikely.";
       } else if (ratio <= 0.5) {
-        bandLabel = "Yellow — Moderate margin-at-risk";
-        cssClass = "risk-yellow";
+        label = "Yellow — Moderate margin-at-risk";
+        cssClass = "band-yellow";
         explanation =
           "There is meaningful drag across several domains. Addressing a small set of high-impact practices could recover noticeable capacity and margin.";
       } else if (ratio <= 0.75) {
-        bandLabel = "Red — High margin-at-risk";
-        cssClass = "risk-red";
+        label = "Red — High margin-at-risk";
+        cssClass = "band-red";
         explanation =
           "Your responses suggest elevated people-side risk. Without deliberate intervention, margin leakage is likely to persist or grow under pressure.";
       } else {
-        bandLabel = "Black — Severe margin-at-risk";
-        cssClass = "risk-black";
+        label = "Black — Severe margin-at-risk";
+        cssClass = "band-black";
         explanation =
           "Signals point to severe people-side margin exposure. A structured diagnostic and implementation plan is recommended to stabilise performance and protect cash.";
       }
 
-      riskBadge.className = `badge ${cssClass}`;
-      riskLabel.textContent = bandLabel;
-      resultText.textContent = explanation;
+      bandLabel.className = `band-label ${cssClass}`;
+      bandText.textContent = label;
+      resultTextEl.textContent = explanation;
 
-      resultEl.style.display = "block";
-      leadForm.style.display = "block";
-      leadThankyou.style.display = "none";
-
-      // scroll to result on mobile
-      resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      wizardView.classList.add("hidden");
+      resultView.classList.remove("hidden");
     }
 
-    // --- Event handlers ---
-    backBtn.addEventListener("click", () => {
-      if (currentDomainIndex === 0) return;
-      if (!captureCurrentAnswers()) return;
-      currentDomainIndex -= 1;
-      renderDomain();
-    });
-
-    nextBtn.addEventListener("click", () => {
-      if (!captureCurrentAnswers()) return;
-
-      if (currentDomainIndex < domains.length - 1) {
-        currentDomainIndex += 1;
-        renderDomain();
-      } else {
-        // last domain → compute overall risk
-        computeOverallRisk();
+    function restartScan() {
+      currentDomainIndex = 0;
+      for (let d = 0; d < answers.length; d++) {
+        answers[d] = [null, null, null];
       }
-    });
+      orgInput.value = "";
+      associationInput.value = "";
+      emailInput.value = "";
+      leadThankyou.style.display = "none";
+      resultView.classList.add("hidden");
+      wizardView.classList.remove("hidden");
+      renderDomainPage();
+    }
 
-    submitLeadBtn.addEventListener("click", () => {
+    function reviewAnswers() {
+      // Go back to first domain but keep answers
+      currentDomainIndex = 0;
+      resultView.classList.add("hidden");
+      wizardView.classList.remove("hidden");
+      renderDomainPage();
+    }
+
+    // --- Lead capture (front-end only; hook to Formspree/backend later) ---
+    function handleLeadSubmit() {
       const email = emailInput.value.trim();
       if (!email) {
         alert("Please add your email address so we can route your summary.");
@@ -670,22 +786,37 @@
       const payload = {
         email,
         organization: orgInput.value.trim(),
-        association: associationInput.value.trim()
+        association: associationInput.value.trim(),
+        scores: answers
       };
 
-      console.log("Navetra lead (placeholder):", payload);
+      // TODO: integrate with Formspree, a backend API, or similar
+      console.log("Navetra lead (not yet sent):", payload);
+
       leadThankyou.style.display = "block";
-    });
+    }
+
+    // --- Wire up buttons ---
+    backBtn.addEventListener("click", handleBack);
+    nextBtn.addEventListener("click", handleNext);
+    restartBtn.addEventListener("click", restartScan);
+    reviewBtn.addEventListener("click", reviewAnswers);
+    submitLeadBtn.addEventListener("click", handleLeadSubmit);
 
     // --- Initial render ---
-    renderDomain();
+    renderDomainPage();
 
-    // --- PWA service worker registration (safe if missing) ---
+    // --- Optional PWA SW registration ---
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(() => {});
+        navigator.serviceWorker
+          .register("sw.js")
+          .catch(() => {
+            // ignore if not present
+          });
       });
     }
   </script>
 </body>
 </html>
+
