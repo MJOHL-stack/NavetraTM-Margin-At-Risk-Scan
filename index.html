@@ -362,6 +362,33 @@
       font-size: 0.84rem;
     }
 
+    .lead-actions-secondary {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .lead-secondary-btn {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .btn-whatsapp {
+      background: #25d366;
+      color: #0b1120;
+    }
+
+    .btn-sms {
+      background: #111827;
+      color: #f9fafb;
+    }
+
     .lead-note {
       margin-top: 8px;
       font-size: 0.76rem;
@@ -423,7 +450,7 @@
       </div>
 
       <div class="lead-form">
-        <div class="lead-title">Step 3 · Quanify Risk in $ using the Navetra™ platform </div>
+        <div class="lead-title">Step 3 · Quantify risk in $ using the Navetra™ platform</div>
 
         <div class="field-label">Organization (optional)</div>
         <input id="orgInput" type="text" placeholder="Plant or business unit name" />
@@ -438,8 +465,17 @@
           Send summary to Navetra™ team
         </button>
 
+        <div class="lead-actions-secondary">
+          <button id="whatsAppBtn" class="lead-secondary-btn btn-whatsapp" type="button">
+            Send this summary via WhatsApp
+          </button>
+          <button id="smsBtn" class="lead-secondary-btn btn-sms" type="button">
+            Send this summary via text
+          </button>
+        </div>
+
         <div class="lead-note">
-          Complimentary Risk Scan.Email these results to us if you would like access to the Navetra™ platform to quantify your risk.Paid service.
+          Complimentary risk scan. Email or message these results to us if you would like access to the Navetra™ platform to quantify your risk. Platform access and deeper diagnostics are paid services.
         </div>
         <div id="leadThankyou" class="lead-thankyou">
           Thank you — your details are noted. A Navetra™ summary will be reviewed and queued for follow-up.
@@ -449,45 +485,9 @@
   </div>
 
   <script>
-    <script>
-  // ------- CONFIG: where to send data later (GitHub / backend / form service) -------
-  // When you’re ready, set SUBMIT_ENDPOINT to a URL that accepts POST JSON and
-  // writes into GitHub, a database, or a form tool.
-  //
-  // Example (later):
-  // const SUBMIT_ENDPOINT = "https://your-backend.example.com/navetra-leads";
-  //
-  // For now, keep it empty ("") and the app will just log to the console,
-  // so the front-end works even before you have a backend.
-
-  const SUBMIT_ENDPOINT = "";
-
-  async function submitNavetraLead(payload) {
-    // If no endpoint is configured, just log the data and exit gracefully.
-    if (!SUBMIT_ENDPOINT) {
-      console.log("Navetra lead payload (no endpoint configured yet):", payload);
-      return;
-    }
-
-    try {
-      const response = await fetch(SUBMIT_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        console.error("Navetra lead submission failed:", response.status, await response.text());
-      } else {
-        console.log("Navetra lead submitted successfully");
-      }
-    } catch (err) {
-      console.error("Error submitting Navetra lead:", err);
-    }
-  }
-
+    // ------- CONFIG: where to send data later (GitHub / backend / form service) -------
+    // When you’re ready, set SUBMIT_ENDPOINT to a URL that accepts POST JSON.
+    const SUBMIT_ENDPOINT = ""; // e.g. "https://your-backend.example.com/navetra-leads"
 
     // ------- DOMAIN DEFINITIONS -------
 
@@ -552,8 +552,9 @@
     // ------- STATE -------
 
     let currentDomainIndex = 0;
-    // answers[domainIndex][questionIndex] = "yes" | "sometimes" | "no" | null
     const answers = domains.map(() => [null, null, null]);
+    let lastBandLabel = "";
+    let lastBandExplanation = "";
 
     // ------- DOM HOOKS -------
 
@@ -572,6 +573,8 @@
     const emailInput = document.getElementById("emailInput");
     const submitLeadBtn = document.getElementById("submitLeadBtn");
     const leadThankyou = document.getElementById("leadThankyou");
+    const whatsAppBtn = document.getElementById("whatsAppBtn");
+    const smsBtn = document.getElementById("smsBtn");
 
     // ------- RENDER CURRENT DOMAIN "PAGE" -------
 
@@ -583,7 +586,7 @@
       const questionHtml = d.questions
         .map((q, qIndex) => {
           const name = `q${qIndex}`;
-          const saved = answers[idx][qIndex]; // may be null
+          const saved = answers[idx][qIndex];
 
           return `
             <div class="question-block">
@@ -617,15 +620,11 @@
         ${questionHtml}
       `;
 
-      // Back button state
       backBtn.disabled = currentDomainIndex === 0;
-
-      // Next button text
-      if (currentDomainIndex === domains.length - 1) {
-        nextBtn.textContent = "View overall risk band";
-      } else {
-        nextBtn.textContent = "Next domain";
-      }
+      nextBtn.textContent =
+        currentDomainIndex === domains.length - 1
+          ? "View overall risk band"
+          : "Next domain";
     }
 
     // ------- VALIDATE & SAVE CURRENT DOMAIN ANSWERS -------
@@ -651,7 +650,7 @@
 
     function computeOverallRisk() {
       let totalScore = 0;
-      const maxScore = domains.length * 3 * 2; // 5 * 3 * 2 = 30
+      const maxScore = domains.length * 3 * 2;
 
       answers.forEach(domainAnswers => {
         domainAnswers.forEach(v => {
@@ -685,9 +684,35 @@
           "Signals point to severe people-side margin exposure. A structured diagnostic and implementation plan is recommended to stabilise performance and protect cash.";
       }
 
+      lastBandLabel = label;
+      lastBandExplanation = explanation;
+
       bandChip.className = `band-chip ${cssClass}`;
       bandLabel.textContent = label;
       resultText.textContent = explanation;
+    }
+
+    // ------- BUILD SHARE PAYLOAD & TEXT -------
+
+    function buildLeadPayload() {
+      return {
+        email: emailInput.value.trim(),
+        organization: orgInput.value.trim(),
+        association: associationInput.value.trim(),
+        band: lastBandLabel,
+        explanation: lastBandExplanation,
+        submittedAt: new Date().toISOString()
+      };
+    }
+
+    function buildShareText(payload) {
+      return (
+        "Navetra™ margin-at-risk scan\n" +
+        `Band: ${payload.band || "N/A"}\n` +
+        (payload.organization ? `Organization: ${payload.organization}\n` : "") +
+        (payload.association ? `Association: ${payload.association}\n` : "") +
+        (payload.email ? `Email: ${payload.email}\n` : "")
+      );
     }
 
     // ------- NAV HANDLERS -------
@@ -700,14 +725,12 @@
     });
 
     nextBtn.addEventListener("click", () => {
-      // Ensure all questions answered for this domain
       if (!validateAndSaveCurrentDomain()) return;
 
       if (currentDomainIndex < domains.length - 1) {
         currentDomainIndex++;
         renderDomain();
       } else {
-        // All domains answered -> show results
         computeOverallRisk();
         domainSection.style.display = "none";
         resultSection.style.display = "block";
@@ -715,42 +738,17 @@
       }
     });
 
-    // ------- RESET (if needed, you can expose later) -------
+    // ------- LEAD SUBMIT + WHATSAPP + SMS -------
 
-    function resetAll() {
-      currentDomainIndex = 0;
-      for (let i = 0; i < answers.length; i++) {
-        answers[i] = [null, null, null];
-      }
-      domainSection.style.display = "block";
-      resultSection.style.display = "none";
-      orgInput.value = "";
-      associationInput.value = "";
-      emailInput.value = "";
-      leadThankyou.style.display = "none";
-      renderDomain();
-    }
-
-    // ------- LEAD SUBMIT (front-end only; hook for GitHub/backend) -------
-
-    async function handleLeadSubmit() {
+    async function submitLead() {
       const email = emailInput.value.trim();
       if (!email) {
         alert("Please add your email address so we can route your summary.");
-        return;
+        return null;
       }
 
-      const payload = {
-        email,
-        organization: orgInput.value.trim(),
-        association: associationInput.value.trim(),
-        submittedAt: new Date().toISOString()
-      };
-
-      // For now this just logs in the console; when you're ready,
-      // point SUBMIT_ENDPOINT to a small backend that writes into GitHub
-      // (e.g., appends to a JSON file or creates an Issue).
-      console.log("Navetra lead (front-end only for now):", payload);
+      const payload = buildLeadPayload();
+      console.log("Navetra lead:", payload);
 
       if (SUBMIT_ENDPOINT) {
         try {
@@ -765,15 +763,35 @@
       }
 
       leadThankyou.style.display = "block";
+      return payload;
     }
 
-    submitLeadBtn.addEventListener("click", handleLeadSubmit);
+    submitLeadBtn.addEventListener("click", submitLead);
+
+    // WhatsApp: opens chat to +1-226-977-1651 with pre-filled text.
+    whatsAppBtn.addEventListener("click", async () => {
+      const payload = await submitLead();
+      if (!payload) return;
+
+      const msg = buildShareText(payload);
+      const waUrl = "https://wa.me/12269771651?text=" + encodeURIComponent(msg);
+      window.open(waUrl, "_blank");
+    });
+
+    // SMS: opens SMS composer to +1-226-977-1651 (works on phones)
+    smsBtn.addEventListener("click", async () => {
+      const payload = await submitLead();
+      if (!payload) return;
+
+      const msg = buildShareText(payload);
+      const smsUrl = "sms:+12269771651?body=" + encodeURIComponent(msg);
+      window.location.href = smsUrl;
+    });
 
     // ------- INIT -------
 
     renderDomain();
 
-    // PWA service worker registration (safe no-op if sw.js missing)
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("sw.js").catch(() => {});
@@ -782,5 +800,3 @@
   </script>
 </body>
 </html>
-
-
