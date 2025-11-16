@@ -45,11 +45,11 @@
       width: 100%;
       max-width: 540px;
       margin: 12px;
-      border-radius: 18px;
       padding: 16px 14px 18px;
       background: var(--pw-surface);
       border: 1px solid var(--pw-border);
       box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      border-radius: 0; /* squared */
     }
 
     @media (min-width: 640px) {
@@ -117,7 +117,7 @@
     /* Domain "page" */
 
     .domain-card {
-      border-radius: 14px;
+      border-radius: 0;
       border: 1px solid var(--pw-border);
       background: #f9fafb;
       padding: 12px 10px 10px;
@@ -134,7 +134,7 @@
     .domain-tag {
       font-size: 0.7rem;
       padding: 2px 8px;
-      border-radius: 999px;
+      border-radius: 0;
       background: rgba(140, 29, 140, 0.06);
       color: var(--pw-primary);
       font-weight: 500;
@@ -178,7 +178,7 @@
       gap: 3px;
       padding: 4px 9px;
       font-size: 0.75rem;
-      border-radius: 999px;
+      border-radius: 0;
       border: 1px solid #d1d5db;
       background: #ffffff;
       cursor: pointer;
@@ -199,7 +199,7 @@
 
     button.primary {
       flex: 1;
-      border-radius: 999px;
+      border-radius: 0;
       border: none;
       padding: 9px 12px;
       font-size: 0.86rem;
@@ -218,7 +218,7 @@
     }
 
     button.secondary {
-      border-radius: 999px;
+      border-radius: 0;
       padding: 8px 12px;
       font-size: 0.8rem;
       border: 1px solid var(--pw-border);
@@ -240,7 +240,7 @@
     }
 
     .result-card {
-      border-radius: 16px;
+      border-radius: 0;
       padding: 14px 12px 12px;
       background: #ffffff;
       border: 1px solid var(--pw-border);
@@ -259,7 +259,7 @@
       gap: 8px;
       margin-top: 4px;
       padding: 4px 10px;
-      border-radius: 999px;
+      border-radius: 0;
       font-size: 0.8rem;
       border: 1px solid transparent;
     }
@@ -319,7 +319,7 @@
     .lead-form {
       margin-top: 14px;
       padding: 12px 12px 10px;
-      border-radius: 14px;
+      border-radius: 0;
       border: 1px solid var(--pw-border);
       background: #f9fafb;
       font-size: 0.82rem;
@@ -339,7 +339,7 @@
 
     .lead-form input {
       width: 100%;
-      border-radius: 10px;
+      border-radius: 0;
       border: 1px solid var(--pw-border);
       padding: 7px 9px;
       font-size: 0.82rem;
@@ -349,30 +349,17 @@
       color: #9ca3af;
     }
 
-    .lead-submit {
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      background: var(--pw-primary);
-      color: #ffffff;
-      font-weight: 600;
-      font-size: 0.84rem;
-    }
-
     .lead-actions-secondary {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     .lead-secondary-btn {
       width: 100%;
       padding: 7px 10px;
-      border-radius: 999px;
+      border-radius: 0;
       border: none;
       cursor: pointer;
       font-weight: 500;
@@ -445,11 +432,12 @@
         </div>
         <div id="resultText" class="result-text"></div>
         <div class="result-note">
+          This is a directional signal. Navetra™ quantifies this exposure in dollars and prioritises where to recover margin.
         </div>
       </div>
 
       <div class="lead-form">
-        <div class="lead-title">Step 3 · Quantify risk in $ using the Navetra™ platform</div>
+        <div class="lead-title">Step 3 · Send this snapshot (with your email)</div>
 
         <div class="field-label">Organization (optional)</div>
         <input id="orgInput" type="text" placeholder="Plant or business unit name" />
@@ -457,34 +445,30 @@
         <div class="field-label">Association (optional)</div>
         <input id="associationInput" type="text" placeholder="e.g., NIA, EFC, Markham BoT" />
 
-        <div class="field-label">Email address</div>
+        <div class="field-label">Your email</div>
         <input id="emailInput" type="email" placeholder="you@company.com" autocomplete="email" />
-        </button>
 
         <div class="lead-actions-secondary">
           <button id="whatsAppBtn" class="lead-secondary-btn btn-whatsapp" type="button">
-            Send this summary via WhatsApp
+            Send via WhatsApp
           </button>
           <button id="smsBtn" class="lead-secondary-btn btn-sms" type="button">
-            Send this summary via text
+            Send via text message
           </button>
         </div>
 
         <div class="lead-note">
-          Complimentary risk scan. Email or message these results to us if you would like access to the Navetra™ platform to quantify your risk. Platform access and deeper diagnostics are paid services.
+          Tapping WhatsApp or text will open a message to Navetra™ with your band, organization, and email pre-filled.
+          You can edit the message before you send it.
         </div>
         <div id="leadThankyou" class="lead-thankyou">
-          Thank you — your details are noted. A Navetra™ summary will be reviewed and queued for follow-up.
+          Draft created — check your messaging app to send.
         </div>
       </div>
     </section>
   </div>
 
   <script>
-    // ------- CONFIG: where to send data later (GitHub / backend / form service) -------
-    // When you’re ready, set SUBMIT_ENDPOINT to a URL that accepts POST JSON.
-    const SUBMIT_ENDPOINT = ""; // e.g. "https://your-backend.example.com/navetra-leads"
-
     // ------- DOMAIN DEFINITIONS -------
 
     const domains = [
@@ -567,7 +551,6 @@
     const orgInput = document.getElementById("orgInput");
     const associationInput = document.getElementById("associationInput");
     const emailInput = document.getElementById("emailInput");
-    const submitLeadBtn = document.getElementById("submitLeadBtn");
     const leadThankyou = document.getElementById("leadThankyou");
     const whatsAppBtn = document.getElementById("whatsAppBtn");
     const smsBtn = document.getElementById("smsBtn");
@@ -696,19 +679,18 @@
         organization: orgInput.value.trim(),
         association: associationInput.value.trim(),
         band: lastBandLabel,
-        explanation: lastBandExplanation,
-        submittedAt: new Date().toISOString()
+        explanation: lastBandExplanation
       };
     }
 
     function buildShareText(payload) {
-      return (
-        "Navetra™ margin-at-risk scan\n" +
-        `Band: ${payload.band || "N/A"}\n` +
-        (payload.organization ? `Organization: ${payload.organization}\n` : "") +
-        (payload.association ? `Association: ${payload.association}\n` : "") +
-        (payload.email ? `Email: ${payload.email}\n` : "")
-      );
+      let msg = "Navetra™ margin-at-risk scan\n";
+      if (payload.band) msg += `Band: ${payload.band}\n`;
+      if (payload.organization) msg += `Organization: ${payload.organization}\n`;
+      if (payload.association) msg += `Association: ${payload.association}\n`;
+      if (payload.email) msg += `Email: ${payload.email}\n`;
+      msg += "\nPlease review and let’s discuss next steps to quantify this risk in dollars.";
+      return msg;
     }
 
     // ------- NAV HANDLERS -------
@@ -734,54 +716,33 @@
       }
     });
 
-    // ------- LEAD SUBMIT + WHATSAPP + SMS -------
+    // ------- WHATSAPP + SMS (email only via these channels) -------
 
-    async function submitLead() {
-      const email = emailInput.value.trim();
-      if (!email) {
-        alert("Please add your email address so we can route your summary.");
-        return null;
+    function showThankYou() {
+      if (leadThankyou) {
+        leadThankyou.style.display = "block";
+        setTimeout(() => {
+          leadThankyou.style.display = "none";
+        }, 4000);
       }
-
-      const payload = buildLeadPayload();
-      console.log("Navetra lead:", payload);
-
-      if (SUBMIT_ENDPOINT) {
-        try {
-          await fetch(SUBMIT_ENDPOINT, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-        } catch (e) {
-          console.error("Lead submit failed:", e);
-        }
-      }
-
-      leadThankyou.style.display = "block";
-      return payload;
     }
 
-    submitLeadBtn.addEventListener("click", submitLead);
-
     // WhatsApp: opens chat to +1-226-977-1651 with pre-filled text.
-    whatsAppBtn.addEventListener("click", async () => {
-      const payload = await submitLead();
-      if (!payload) return;
-
+    whatsAppBtn.addEventListener("click", () => {
+      const payload = buildLeadPayload();
       const msg = buildShareText(payload);
       const waUrl = "https://wa.me/12269771651?text=" + encodeURIComponent(msg);
       window.open(waUrl, "_blank");
+      showThankYou();
     });
 
     // SMS: opens SMS composer to +1-226-977-1651 (works on phones)
-    smsBtn.addEventListener("click", async () => {
-      const payload = await submitLead();
-      if (!payload) return;
-
+    smsBtn.addEventListener("click", () => {
+      const payload = buildLeadPayload();
       const msg = buildShareText(payload);
       const smsUrl = "sms:+12269771651?body=" + encodeURIComponent(msg);
       window.location.href = smsUrl;
+      showThankYou();
     });
 
     // ------- INIT -------
