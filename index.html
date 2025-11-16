@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Navetra™ Margin-at-Risk Scan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#050815" />
+  <style>
+    :root {
+      --pw-primary: #8c1d8c;
+      --pw-primary-bright: #bf29ec;
+      --pw-secondary: #e3655b;
+      --pw-tertiary: #ffbf46;
+      --pw-highlight: #48a9a6;
+      --pw-bg: #050815;
+      --pw-surface: #0b1020;
+      --pw-surface-soft: #101528;
+      --pw-border: #262b3f;
+      --pw-text-main: #f9fafb;
+      --pw-text-soft: #a1a5bb;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
+      color: var(--pw-text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 540px;
+      margin: 12px;
+      border-radius: 24px;
+      padding: 18px 16px 18px;
+      background: linear-gradient(145deg, #020617, #050816);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(15, 23, 42, 0.7);
+    }
+
+    @media (min-width: 640px) {
+      .app {
+        padding: 22px 22px 22px;
+        margin: 22px;
+      }
+    }
+
+    .app-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #f4f4ff;
+    }
+
+    .brand-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, var(--pw-primary-bright), var(--pw-primary));
+      box-shadow: 0 0 12px rgba(191, 41, 236, 0.55);
+    }
+
+    .app-subtitle {
+      font-size: 0.8rem;
+      color: var(--pw-text-soft);
+    }
+
+    .app-title {
+      font-size: 1.35rem;
+      font-weight: 650;
+      margin-top: 6px;
+    }
+
+    .step-label {
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .section {
+      margin-top: 12px;
+    }
+
+    /* domain blocks */
+
+    .domain-block {
+      margin-bottom: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--pw-border);
+      background: radial-gradient(circle at top left, rgba(140, 29, 140, 0.18), var(--pw-surface));
+      padding: 10px 10px 8px;
+    }
+
+    .domain-header {
+      margin-bottom: 6px;
+    }
+
+    .domain-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+      background: rgba(72, 169, 166, 0.14);
+      color: #b7f3ee;
+      margin-bottom: 4px;
+    }
+
+    .domain-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .domain-desc {
+      font-size: 0.74rem;
+      color: var(--pw-text-soft);
+      margin-top: 1px;
+    }
+
+    .domain-questions {
+      margin-top: 4px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.88);
+      padding: 6px 8px 6px;
+    }
+
+    .question {
+      margin-bottom: 6px;
+      font-size: 0.75rem;
+    }
+
+    .question:last-child {
+      margin-bottom: 2px;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 3px;
+    }
+
+    .options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      font-size: 0.7rem;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      cursor: pointer;
+      color: #e5e7eb;
+    }
+
+    .options input {
+      accent-color: var(--pw-primary-bright);
+      cursor: pointer;
+    }
+
+    .helper-text {
+      font-size: 0.72rem;
+      color: var(--pw-text-soft);
+      margin-top: 4px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button.primary {
+      flex: 1;
+      border-radius: 999px;
+      border: none;
+      padding: 9px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--pw-primary-bright), var(--pw-highlight));
+      color: #020617;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.08s ease;
+    }
+
+    button.primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75);
+    }
+
+    button.secondary {
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      border: 1px solid var(--pw-border);
+      background: transparent;
+      color: var(--pw-text-soft);
+      cursor: pointer;
+    }
+
+    .result {
+      display: none;
+      margin-top: 12px;
+      border-radius: 16px;
+      padding: 9px 10px 10px;
+      background: radial-gradient(circle at top right, rgba(72, 169, 166, 0.2), var(--pw-surface-soft));
+      font-size: 0.8rem;
+    }
+
+    .result-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid transparent;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+    }
+
+    .risk-green {
+      background: rgba(72, 169, 166, 0.18);
+      border-color: #48a9a6;
+    }
+
+    .risk-green .dot {
+      background: #48a9a6;
+    }
+
+    .risk-yellow {
+      background: rgba(255, 191, 70, 0.16);
+      border-color: #ffbf46;
+    }
+
+    .risk-yellow .dot {
+      background: #ffbf46;
+    }
+
+    .risk-red {
+      background: rgba(227, 101, 91, 0.18);
+      border-color: #e3655b;
+    }
+
+    .risk-red .dot {
+      background: #e3655b;
+    }
+
+    .risk-black {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: #000;
+    }
+
+    .risk-black .dot {
+      background: #000;
+    }
+
+    .result-text {
+      margin-top: 6px;
+      color: var(--pw-text-main);
+    }
+
+    .result-note {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: var(--pw-text-soft);
+    }
+
+    /* lead form */
+
+    .lead-form {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 10px 9px;
+      border-radius: 16px;
+      border: 1px solid var(--pw-border);
+      background: rgba(10, 15, 30, 0.96);
+      font-size: 0.78rem;
+    }
+
+    .lead-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .field-label {
+      font-size: 0.72rem;
+      color: var(--pw-text-soft);
+      margin-top: 6px;
+      margin-bottom: 2px;
+    }
+
+    .lead-form input {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: var(--pw-text-main);
+      padding: 6px 8px;
+      font-size: 0.78rem;
+    }
+
+    .lead-form input::placeholder {
+      color: #6b7280;
+    }
+
+    .lead-submit {
+      width: 100%;
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: var(--pw-secondary);
+      color: #020617;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .lead-note {
+      margin-top: 6px;
+      font-size: 0.7rem;
+      color: var(--pw-text-soft);
+    }
+
+    .lead-thankyou {
+      margin-top: 6px;
+      font-size: 0.72rem;
+      color: #bbf7d0;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-dot"></div>
+        <span>PURPLE WINS · NAVETRA™</span>
+      </div>
+      <div class="app-subtitle">
+        Executive scan for people-side margin risk. ~2–3 minutes across all domains.
+      </div>
+      <h1 class="app-title">How much margin are you leaking?</h1>
+    </header>
+
+    <section class="section">
+      <div class="step-label">Step 1 · Scan each risk domain</div>
+      <p class="helper-text">
+        Review each domain below and answer 3 questions. Please respond for all domains to see your overall risk band.
+      </p>
+
+      <div id="domainsContainer"></div>
+
+      <p class="helper-text">
+        Answers: <strong>Yes = 2</strong>, <strong>Sometimes = 1</strong>, <strong>No = 0</strong>. Higher scores indicate higher people-side margin risk.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="step-label">Step 2 · View overall risk band</div>
+      <div class="cta-row">
+        <button id="checkRiskBtn" class="primary">View overall risk band</button>
+        <button id="resetBtn" class="secondary">Clear &amp; start over</button>
+      </div>
+
+      <div id="result" class="result">
+        <div class="result-title">Overall Margin-at-Risk Snapshot</div>
+        <div id="riskBadge" class="badge">
+          <div class="dot"></div>
+          <span id="riskLabel"></span>
+        </div>
+        <div id="resultText" class="result-text"></div>
+        <div class="result-note">
+          This view combines all domains to show your people-side margin exposure on a Green · Yellow · Red · Black (severe) scale.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div id="leadForm" class="lead-form">
+        <div class="lead-title">Step 3 · Optional — request a Navetra™ snapshot</div>
+
+        <div class="field-label">Organization (optional)</div>
+        <input id="orgInput" type="text" placeholder="e.g., Plant / business unit name" />
+
+        <div class="field-label">Association (optional)</div>
+        <input id="associationInput" type="text" placeholder="e.g., NIA, EFC, Markham BoT" />
+
+        <div class="field-label">Email address</div>
+        <input id="emailInput" type="email" placeholder="you@company.com" autocomplete="email" />
+
+        <button id="submitLeadBtn" type="button" class="lead-submit">
+          Send summary to Navetra™ team
+        </button>
+
+        <div class="lead-note">
+          This snapshot is complimentary. A summary of this mini diagnostic can be sent onward to our secure mailbox if you would like to quantify this risk for your organization and create a practical list of implementation actions to fix the problems.
+          Ongoing analysis, deeper diagnostics, and Navetra™ platform access are available as paid services, should you choose to continue.
+        </div>
+        <div id="leadThankyou" class="lead-thankyou">
+          Thank you — your details are noted. A Navetra™ summary will be reviewed and queued for follow-up.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // --- Domain definitions (5 domains, 3 questions each) ---
+    const domains = [
+      {
+        id: "hiring",
+        tag: "People capacity",
+        title: "Hiring Delays",
+        desc: "Critical roles sitting open; slow decisions on offers.",
+        questions: [
+          "Do key roles often stay open longer than 60 days?",
+          "Have you delayed production, projects, or service because a role was not filled?",
+          "Do hiring decisions frequently get stuck between HR and operations?"
+        ]
+      },
+      {
+        id: "knowledge",
+        tag: "Know-how risk",
+        title: "Knowledge Walking Out",
+        desc: "Reliance on a few veterans for critical process knowledge.",
+        questions: [
+          "Would losing 1–2 experienced people significantly disrupt operations?",
+          "Is critical know-how more in people’s heads than in documented systems?",
+          "Are retirements or unplanned exits a material operational risk?"
+        ]
+      },
+      {
+        id: "leaders",
+        tag: "Decision drag",
+        title: "Misaligned Leaders",
+        desc: "Different leaders giving different answers to the same question.",
+        questions: [
+          "Do leaders sometimes send mixed or competing signals on priorities?",
+          "Do cross-functional decisions bounce around before someone clearly owns them?",
+          "Do teams say, “it depends which leader you ask”?"
+        ]
+      },
+      {
+        id: "training",
+        tag: "ROI drag",
+        title: "Training That Doesn’t Stick",
+        desc: "Time and budget on training without visible behaviour change.",
+        questions: [
+          "Do you invest in training where on-floor impact is hard to see?",
+          "Is it difficult to tie training back to throughput, quality, or financial outcomes?",
+          "Do people revert to old habits within weeks of a training program?"
+        ]
+      },
+      {
+        id: "bottlenecks",
+        tag: "Flow friction",
+        title: "Cross-Team Bottlenecks",
+        desc: "Work stalling between departments or shifts.",
+        questions: [
+          "Do jobs or orders often wait on another department before moving forward?",
+          "Do customer issues ever stall because internal handoffs are not clear?",
+          "Do you see rework caused by unclear ownership across teams?"
+        ]
+      }
+    ];
+
+    const domainsContainer = document.getElementById("domainsContainer");
+    const checkRiskBtn = document.getElementById("checkRiskBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resultEl = document.getElementById("result");
+    const riskBadge = document.getElementById("riskBadge");
+    const riskLabel = document.getElementById("riskLabel");
+    const resultText = document.getElementById("resultText");
+
+    const leadForm = document.getElementById("leadForm");
+    const orgInput = document.getElementById("orgInput");
+    const associationInput = document.getElementById("associationInput");
+    const emailInput = document.getElementById("emailInput");
+    const submitLeadBtn = document.getElementById("submitLeadBtn");
+    const leadThankyou = document.getElementById("leadThankyou");
+
+    // --- Render all domains and questions (stacked, mobile-friendly) ---
+    function renderDomains() {
+      domainsContainer.innerHTML = domains
+        .map((d, dIndex) => {
+          const qs = d.questions
+            .map(
+              (q, qIndex) => `
+              <div class="question">
+                Q${qIndex + 1}. ${q}
+                <div class="options">
+                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="yes" /> Yes</label>
+                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="sometimes" /> Sometimes</label>
+                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="no" /> No</label>
+                </div>
+              </div>
+            `
+            )
+            .join("");
+
+          return `
+            <div class="domain-block">
+              <div class="domain-header">
+                <div class="domain-tag">${d.tag}</div>
+                <div class="domain-title">${d.title}</div>
+                <div class="domain-desc">${d.desc}</div>
+              </div>
+              <div class="domain-questions">
+                ${qs}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    // --- Compute cumulative score across all domains ---
+    function computeOverallRisk() {
+      const numDomains = domains.length;
+      const questionsPerDomain = 3;
+      let totalScore = 0;
+
+      for (let d = 0; d < numDomains; d++) {
+        for (let q = 0; q < questionsPerDomain; q++) {
+          const selected = document.querySelector(
+            `input[name="d${d}_q${q}"]:checked`
+          );
+          if (!selected) {
+            alert("Please answer all questions in all domains before viewing your risk band.");
+            return;
+          }
+          if (selected.value === "yes") totalScore += 2;
+          else if (selected.value === "sometimes") totalScore += 1;
+        }
+      }
+
+      const maxScore = numDomains * questionsPerDomain * 2; // all "yes"
+      const ratio = totalScore / maxScore;
+
+      let bandLabel, cssClass, explanation;
+
+      if (ratio <= 0.25) {
+        bandLabel = "Green — Low margin-at-risk";
+        cssClass = "risk-green";
+        explanation =
+          "Based on your responses, people-side margin risk appears contained. You may still have targeted pockets of leakage, but large-scale exposure is unlikely.";
+      } else if (ratio <= 0.5) {
+        bandLabel = "Yellow — Moderate margin-at-risk";
+        cssClass = "risk-yellow";
+        explanation =
+          "There is meaningful drag across several domains. Addressing a small set of high-impact practices could recover noticeable capacity and margin.";
+      } else if (ratio <= 0.75) {
+        bandLabel = "Red — High margin-at-risk";
+        cssClass = "risk-red";
+        explanation =
+          "Your responses suggest elevated people-side risk. Without deliberate intervention, margin leakage is likely to persist or grow under pressure.";
+      } else {
+        bandLabel = "Black — Severe margin-at-risk";
+        cssClass = "risk-black";
+        explanation =
+          "Signals point to severe people-side margin exposure. A structured diagnostic and implementation plan is recommended to stabilise performance and protect cash.";
+      }
+
+      riskBadge.className = `badge ${cssClass}`;
+      riskLabel.textContent = bandLabel;
+      resultText.textContent = explanation;
+
+      resultEl.style.display = "block";
+      leadForm.style.display = "block";
+      leadThankyou.style.display = "none";
+    }
+
+    // --- Reset everything ---
+    function resetAll() {
+      document
+        .querySelectorAll("input[type=radio]")
+        .forEach((input) => (input.checked = false));
+      resultEl.style.display = "none";
+      leadForm.style.display = "none";
+      leadThankyou.style.display = "none";
+      orgInput.value = "";
+      associationInput.value = "";
+      emailInput.value = "";
+    }
+
+    // --- Handle lead submit (front-end only for now) ---
+    function handleLeadSubmit() {
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        alert("Please add your email address so we can route your summary.");
+        return;
+      }
+
+      const payload = {
+        email,
+        organization: orgInput.value.trim(),
+        association: associationInput.value.trim()
+      };
+
+      // Placeholder for later integration (Formspree, backend, etc.)
+      console.log("Navetra lead (not yet sent):", payload);
+
+      leadThankyou.style.display = "block";
+    }
+
+    checkRiskBtn.addEventListener("click", computeOverallRisk);
+    resetBtn.addEventListener("click", resetAll);
+    submitLeadBtn.addEventListener("click", handleLeadSubmit);
+
+    renderDomains();
+
+    // PWA service worker registration (safe no-op if missing)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("sw.js")
+          .catch(() => {/* ignore */});
+      });
+    }
+  </script>
+</body>
+</html>
