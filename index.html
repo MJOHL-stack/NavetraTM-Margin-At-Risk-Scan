@@ -449,10 +449,45 @@
   </div>
 
   <script>
-    // ------- CONFIG: where to send data later (GitHub / backend / Form service) -------
-    // When you’re ready, set SUBMIT_ENDPOINT to a URL that accepts POST JSON and
-    // writes into GitHub, a database, or a form tool.
-    const SUBMIT_ENDPOINT = ""; // e.g. "https://your-backend.example.com/navetra-leads"
+    <script>
+  // ------- CONFIG: where to send data later (GitHub / backend / form service) -------
+  // When you’re ready, set SUBMIT_ENDPOINT to a URL that accepts POST JSON and
+  // writes into GitHub, a database, or a form tool.
+  //
+  // Example (later):
+  // const SUBMIT_ENDPOINT = "https://your-backend.example.com/navetra-leads";
+  //
+  // For now, keep it empty ("") and the app will just log to the console,
+  // so the front-end works even before you have a backend.
+
+  const SUBMIT_ENDPOINT = "";
+
+  async function submitNavetraLead(payload) {
+    // If no endpoint is configured, just log the data and exit gracefully.
+    if (!SUBMIT_ENDPOINT) {
+      console.log("Navetra lead payload (no endpoint configured yet):", payload);
+      return;
+    }
+
+    try {
+      const response = await fetch(SUBMIT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        console.error("Navetra lead submission failed:", response.status, await response.text());
+      } else {
+        console.log("Navetra lead submitted successfully");
+      }
+    } catch (err) {
+      console.error("Error submitting Navetra lead:", err);
+    }
+  }
+
 
     // ------- DOMAIN DEFINITIONS -------
 
