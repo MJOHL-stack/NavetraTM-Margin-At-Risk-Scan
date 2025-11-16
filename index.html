@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#050815" />
+
+  <!-- App / iOS icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+
   <style>
     :root {
       --pw-primary: #8c1d8c;
@@ -15,7 +21,7 @@
       --pw-highlight: #48a9a6;
       --pw-bg: #050815;
       --pw-surface: #0b1020;
-      --pw-surface-soft: #101528;
+      --pw-surface-soft: #111827;
       --pw-border: #262b3f;
       --pw-text-main: #f9fafb;
       --pw-text-soft: #a1a5bb;
@@ -29,20 +35,20 @@
     body {
       margin: 0;
       padding: 0;
+      min-height: 100vh;
       background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
       color: var(--pw-text-main);
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
     }
 
     .app {
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
       margin: 12px;
       border-radius: 24px;
-      padding: 18px 16px 18px;
+      padding: 18px 16px 20px;
       background: linear-gradient(145deg, #020617, #050816);
       border: 1px solid rgba(148, 163, 184, 0.22);
       box-shadow:
@@ -52,7 +58,7 @@
 
     @media (min-width: 640px) {
       .app {
-        padding: 22px 22px 22px;
+        padding: 22px 22px 24px;
         margin: 22px;
       }
     }
@@ -68,7 +74,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -89,9 +95,13 @@
     }
 
     .app-title {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 650;
       margin-top: 6px;
+    }
+
+    .section {
+      margin-top: 10px;
     }
 
     .step-label {
@@ -99,25 +109,22 @@
       font-size: 0.68rem;
       letter-spacing: 0.16em;
       color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: var(--pw-text-soft);
       margin-bottom: 6px;
     }
 
-    .section {
-      margin-top: 12px;
-    }
+    /* Domain “page” */
 
-    /* domain blocks */
-
-    .domain-block {
-      margin-bottom: 12px;
-      border-radius: 16px;
+    .domain-shell {
+      border-radius: 20px;
       border: 1px solid var(--pw-border);
-      background: radial-gradient(circle at top left, rgba(140, 29, 140, 0.18), var(--pw-surface));
-      padding: 10px 10px 8px;
-    }
-
-    .domain-header {
-      margin-bottom: 6px;
+      background: radial-gradient(circle at top left, rgba(140, 29, 140, 0.25), var(--pw-surface));
+      padding: 12px 12px 10px;
     }
 
     .domain-tag {
@@ -126,32 +133,38 @@
       padding: 2px 8px;
       border-radius: 999px;
       font-size: 0.65rem;
-      background: rgba(72, 169, 166, 0.14);
+      background: rgba(72, 169, 166, 0.18);
       color: #b7f3ee;
       margin-bottom: 4px;
     }
 
     .domain-title {
-      font-size: 0.92rem;
+      font-size: 1rem;
       font-weight: 600;
+      margin-bottom: 2px;
     }
 
     .domain-desc {
-      font-size: 0.74rem;
+      font-size: 0.78rem;
       color: var(--pw-text-soft);
-      margin-top: 1px;
+      margin-bottom: 8px;
+    }
+
+    .domain-progress {
+      font-size: 0.72rem;
+      color: var(--pw-text-soft);
+      margin-bottom: 6px;
     }
 
     .domain-questions {
-      margin-top: 4px;
       border-radius: 12px;
-      background: rgba(15, 23, 42, 0.88);
-      padding: 6px 8px 6px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 9px 6px;
     }
 
     .question {
       margin-bottom: 6px;
-      font-size: 0.75rem;
+      font-size: 0.76rem;
     }
 
     .question:last-child {
@@ -183,14 +196,9 @@
       cursor: pointer;
     }
 
-    .helper-text {
-      font-size: 0.72rem;
-      color: var(--pw-text-soft);
-      margin-top: 4px;
-    }
-
-    .cta-row {
+    .nav-row {
       display: flex;
+      justify-content: space-between;
       gap: 8px;
       margin-top: 10px;
     }
@@ -200,7 +208,7 @@
       border-radius: 999px;
       border: none;
       padding: 9px 12px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       background: linear-gradient(135deg, var(--pw-primary-bright), var(--pw-highlight));
@@ -216,6 +224,7 @@
     }
 
     button.secondary {
+      min-width: 82px;
       border-radius: 999px;
       padding: 8px 12px;
       font-size: 0.78rem;
@@ -225,12 +234,19 @@
       cursor: pointer;
     }
 
+    button.secondary:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    /* Result */
+
     .result {
       display: none;
-      margin-top: 12px;
-      border-radius: 16px;
+      margin-top: 14px;
+      border-radius: 18px;
       padding: 9px 10px 10px;
-      background: radial-gradient(circle at top right, rgba(72, 169, 166, 0.2), var(--pw-surface-soft));
+      background: radial-gradient(circle at top right, rgba(72, 169, 166, 0.24), var(--pw-surface-soft));
       font-size: 0.8rem;
     }
 
@@ -256,41 +272,17 @@
       border-radius: 999px;
     }
 
-    .risk-green {
-      background: rgba(72, 169, 166, 0.18);
-      border-color: #48a9a6;
-    }
+    .risk-green { background: rgba(72, 169, 166, 0.18); border-color: #48a9a6; }
+    .risk-green .dot { background: #48a9a6; }
 
-    .risk-green .dot {
-      background: #48a9a6;
-    }
+    .risk-yellow { background: rgba(255, 191, 70, 0.2); border-color: #ffbf46; }
+    .risk-yellow .dot { background: #ffbf46; }
 
-    .risk-yellow {
-      background: rgba(255, 191, 70, 0.16);
-      border-color: #ffbf46;
-    }
+    .risk-red { background: rgba(227, 101, 91, 0.22); border-color: #e3655b; }
+    .risk-red .dot { background: #e3655b; }
 
-    .risk-yellow .dot {
-      background: #ffbf46;
-    }
-
-    .risk-red {
-      background: rgba(227, 101, 91, 0.18);
-      border-color: #e3655b;
-    }
-
-    .risk-red .dot {
-      background: #e3655b;
-    }
-
-    .risk-black {
-      background: rgba(15, 23, 42, 0.98);
-      border-color: #000;
-    }
-
-    .risk-black .dot {
-      background: #000;
-    }
+    .risk-black { background: rgba(15, 23, 42, 0.98); border-color: #000; }
+    .risk-black .dot { background: #000; }
 
     .result-text {
       margin-top: 6px;
@@ -303,7 +295,7 @@
       color: var(--pw-text-soft);
     }
 
-    /* lead form */
+    /* Lead form */
 
     .lead-form {
       display: none;
@@ -369,12 +361,6 @@
     }
   </style>
 </head>
-  <!-- iOS home-screen icon -->
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-
-<!-- Favicon / general icon (optional but good) -->
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <body>
   <div class="app">
     <header class="app-header">
@@ -388,26 +374,30 @@
       <h1 class="app-title">How much margin are you leaking?</h1>
     </header>
 
-    <section class="section">
-      <div class="step-label">Step 1 · Scan each risk domain</div>
-      <p class="helper-text">
-        Review each domain below and answer 3 questions. Please respond for all domains to see your overall risk band.
+    <!-- DOMAIN “PAGE” -->
+    <section class="section" id="domainSection">
+      <div class="step-label" id="stepLabel">Step 1 · Domain 1 of 5</div>
+      <p class="helper-text" id="helperText">
+        Answer all 3 questions for this domain. You’ll move through each domain in sequence and see your overall risk band at the end.
       </p>
 
-      <div id="domainsContainer"></div>
+      <div class="domain-shell">
+        <div class="domain-tag" id="domainTag"></div>
+        <div class="domain-title" id="domainTitle"></div>
+        <div class="domain-desc" id="domainDesc"></div>
+        <div class="domain-progress" id="domainProgress"></div>
 
-      <p class="helper-text">
-        Answers: <strong>Yes = 2</strong>, <strong>Sometimes = 1</strong>, <strong>No = 0</strong>. Higher scores indicate higher people-side margin risk.
-      </p>
-    </section>
-
-    <section class="section">
-      <div class="step-label">Step 2 · View overall risk band</div>
-      <div class="cta-row">
-        <button id="checkRiskBtn" class="primary">View overall risk band</button>
-        <button id="resetBtn" class="secondary">Clear &amp; start over</button>
+        <div class="domain-questions" id="questionsContainer"></div>
       </div>
 
+      <div class="nav-row">
+        <button id="backBtn" class="secondary">Back</button>
+        <button id="nextBtn" class="primary">Next domain</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="section">
       <div id="result" class="result">
         <div class="result-title">Overall Margin-at-Risk Snapshot</div>
         <div id="riskBadge" class="badge">
@@ -421,12 +411,13 @@
       </div>
     </section>
 
+    <!-- LEAD FORM -->
     <section class="section">
       <div id="leadForm" class="lead-form">
         <div class="lead-title">Step 3 · Optional — request a Navetra™ snapshot</div>
 
         <div class="field-label">Organization (optional)</div>
-        <input id="orgInput" type="text" placeholder="e.g., Plant / business unit name" />
+        <input id="orgInput" type="text" placeholder="e.g., plant / business unit name" />
 
         <div class="field-label">Association (optional)</div>
         <input id="associationInput" type="text" placeholder="e.g., NIA, EFC, Markham BoT" />
@@ -509,9 +500,21 @@
       }
     ];
 
-    const domainsContainer = document.getElementById("domainsContainer");
-    const checkRiskBtn = document.getElementById("checkRiskBtn");
-    const resetBtn = document.getElementById("resetBtn");
+    // --- State ---
+    let currentDomainIndex = 0;
+    const answers = domains.map(d => Array(d.questions.length).fill(null)); // store yes/sometimes/no
+
+    // --- DOM refs ---
+    const stepLabel = document.getElementById("stepLabel");
+    const helperText = document.getElementById("helperText");
+    const domainTag = document.getElementById("domainTag");
+    const domainTitle = document.getElementById("domainTitle");
+    const domainDesc = document.getElementById("domainDesc");
+    const domainProgress = document.getElementById("domainProgress");
+    const questionsContainer = document.getElementById("questionsContainer");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
     const resultEl = document.getElementById("result");
     const riskBadge = document.getElementById("riskBadge");
     const riskLabel = document.getElementById("riskLabel");
@@ -524,62 +527,81 @@
     const submitLeadBtn = document.getElementById("submitLeadBtn");
     const leadThankyou = document.getElementById("leadThankyou");
 
-    // --- Render all domains and questions (stacked, mobile-friendly) ---
-    function renderDomains() {
-      domainsContainer.innerHTML = domains
-        .map((d, dIndex) => {
-          const qs = d.questions
-            .map(
-              (q, qIndex) => `
-              <div class="question">
-                Q${qIndex + 1}. ${q}
-                <div class="options">
-                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="yes" /> Yes</label>
-                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="sometimes" /> Sometimes</label>
-                  <label><input type="radio" name="d${dIndex}_q${qIndex}" value="no" /> No</label>
-                </div>
-              </div>
-            `
-            )
-            .join("");
+    // --- Render the current domain "page" ---
+    function renderDomain() {
+      const d = domains[currentDomainIndex];
+      const total = domains.length;
+      const domainNumber = currentDomainIndex + 1;
 
-          return `
-            <div class="domain-block">
-              <div class="domain-header">
-                <div class="domain-tag">${d.tag}</div>
-                <div class="domain-title">${d.title}</div>
-                <div class="domain-desc">${d.desc}</div>
-              </div>
-              <div class="domain-questions">
-                ${qs}
-              </div>
+      stepLabel.textContent = `Step 1 · Domain ${domainNumber} of ${total}`;
+      domainTag.textContent = d.tag;
+      domainTitle.textContent = d.title;
+      domainDesc.textContent = d.desc;
+      domainProgress.textContent = `Answer all 3 questions for this domain (${domainNumber}/${total}).`;
+
+      // questions
+      questionsContainer.innerHTML = d.questions
+        .map((q, i) => `
+          <div class="question">
+            Q${i + 1}. ${q}
+            <div class="options">
+              <label><input type="radio" name="q${i}" value="yes" /> Yes</label>
+              <label><input type="radio" name="q${i}" value="sometimes" /> Sometimes</label>
+              <label><input type="radio" name="q${i}" value="no" /> No</label>
             </div>
-          `;
-        })
+          </div>
+        `)
         .join("");
+
+      // restore any previously saved answers
+      answers[currentDomainIndex].forEach((val, i) => {
+        if (!val) return;
+        const input = document.querySelector(`input[name="q${i}"][value="${val}"]`);
+        if (input) input.checked = true;
+      });
+
+      // nav button states
+      backBtn.disabled = currentDomainIndex === 0;
+      if (currentDomainIndex === total - 1) {
+        nextBtn.textContent = "View overall risk band";
+      } else {
+        nextBtn.textContent = "Next domain";
+      }
     }
 
-    // --- Compute cumulative score across all domains ---
-    function computeOverallRisk() {
-      const numDomains = domains.length;
-      const questionsPerDomain = 3;
-      let totalScore = 0;
-
-      for (let d = 0; d < numDomains; d++) {
-        for (let q = 0; q < questionsPerDomain; q++) {
-          const selected = document.querySelector(
-            `input[name="d${d}_q${q}"]:checked`
-          );
-          if (!selected) {
-            alert("Please answer all questions in all domains before viewing your risk band.");
-            return;
-          }
-          if (selected.value === "yes") totalScore += 2;
-          else if (selected.value === "sometimes") totalScore += 1;
+    // --- Save answers for current domain; return false if incomplete ---
+    function captureCurrentAnswers() {
+      const qCount = domains[currentDomainIndex].questions.length;
+      for (let i = 0; i < qCount; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!selected) {
+          alert("Please answer all questions for this domain before continuing.");
+          return false;
         }
+        answers[currentDomainIndex][i] = selected.value;
+      }
+      return true;
+    }
+
+    // --- Compute cumulative risk across all domains ---
+    function computeOverallRisk() {
+      let totalScore = 0;
+      let answeredAll = true;
+
+      answers.forEach(domainAnswers => {
+        domainAnswers.forEach(val => {
+          if (!val) answeredAll = false;
+          if (val === "yes") totalScore += 2;
+          else if (val === "sometimes") totalScore += 1;
+        });
+      });
+
+      if (!answeredAll) {
+        alert("Please complete all domains before viewing your overall risk band.");
+        return;
       }
 
-      const maxScore = numDomains * questionsPerDomain * 2; // all "yes"
+      const maxScore = domains.length * 3 * 2; // 5 domains × 3 questions × 2 pts
       const ratio = totalScore / maxScore;
 
       let bandLabel, cssClass, explanation;
@@ -613,25 +635,33 @@
       resultEl.style.display = "block";
       leadForm.style.display = "block";
       leadThankyou.style.display = "none";
+
+      // scroll to result on mobile
+      resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // --- Reset everything ---
-    function resetAll() {
-      document
-        .querySelectorAll("input[type=radio]")
-        .forEach((input) => (input.checked = false));
-      resultEl.style.display = "none";
-      leadForm.style.display = "none";
-      leadThankyou.style.display = "none";
-      orgInput.value = "";
-      associationInput.value = "";
-      emailInput.value = "";
-    }
+    // --- Event handlers ---
+    backBtn.addEventListener("click", () => {
+      if (currentDomainIndex === 0) return;
+      if (!captureCurrentAnswers()) return;
+      currentDomainIndex -= 1;
+      renderDomain();
+    });
 
-    // --- Handle lead submit (front-end only for now) ---
-    function handleLeadSubmit() {
+    nextBtn.addEventListener("click", () => {
+      if (!captureCurrentAnswers()) return;
+
+      if (currentDomainIndex < domains.length - 1) {
+        currentDomainIndex += 1;
+        renderDomain();
+      } else {
+        // last domain → compute overall risk
+        computeOverallRisk();
+      }
+    });
+
+    submitLeadBtn.addEventListener("click", () => {
       const email = emailInput.value.trim();
-
       if (!email) {
         alert("Please add your email address so we can route your summary.");
         return;
@@ -643,24 +673,17 @@
         association: associationInput.value.trim()
       };
 
-      // Placeholder for later integration (Formspree, backend, etc.)
-      console.log("Navetra lead (not yet sent):", payload);
-
+      console.log("Navetra lead (placeholder):", payload);
       leadThankyou.style.display = "block";
-    }
+    });
 
-    checkRiskBtn.addEventListener("click", computeOverallRisk);
-    resetBtn.addEventListener("click", resetAll);
-    submitLeadBtn.addEventListener("click", handleLeadSubmit);
+    // --- Initial render ---
+    renderDomain();
 
-    renderDomains();
-
-    // PWA service worker registration (safe no-op if missing)
+    // --- PWA service worker registration (safe if missing) ---
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("sw.js")
-          .catch(() => {/* ignore */});
+        navigator.serviceWorker.register("sw.js").catch(() => {});
       });
     }
   </script>
